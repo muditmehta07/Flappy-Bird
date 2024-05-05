@@ -2,7 +2,6 @@ import pygame
 import random
 import json
 import os
-os.chdir(r'/mnt/d/iCloudDrive/Mudit/Coding/Python/Flappy Bird/')
 
 pygame.font.init()
 
