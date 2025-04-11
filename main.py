@@ -7,7 +7,7 @@ pygame.font.init()
 
 WIN_WIDTH = 600
 WIN_HEIGHT = 800
-PIPE_VEL = 3
+PIPE_VELOCITY = 3
 FLOOR = 730
 STAT_FONT = pygame.font.SysFont("sans", 30)
 END_FONT = pygame.font.SysFont("sans", 50)
@@ -18,13 +18,16 @@ pygame.display.set_caption("Flappy Bird")
 pipe_img = pygame.transform.scale2x(
     pygame.image.load("./imgs/pipe.png").convert_alpha()
 )
+
 bg_img = pygame.transform.scale(
     pygame.image.load("./imgs/bg.png").convert_alpha(), (600, 900)
 )
+
 bird_images = [
     pygame.transform.scale2x(pygame.image.load("./imgs/bird" + str(x) + ".png"))
     for x in range(1, 4)
 ]
+
 base_img = pygame.transform.scale2x(
     pygame.image.load("./imgs/base.png").convert_alpha()
 )
@@ -35,7 +38,7 @@ class Bird:
     WIN_WIDTH = 0
     MAX_ROTATION = 25
     IMGS = bird_images
-    ROT_VEL = 20
+    R_VELOCITY = 20
     ANIMATION_TIME = 5
 
     def __init__(self, x, y):
@@ -44,19 +47,19 @@ class Bird:
         self.gravity = 9.8
         self.tilt = 0
         self.tick_count = 0
-        self.vel = 0
+        self.velocity = 0
         self.height = self.y
         self.img_count = 0
         self.img = self.IMGS[0]
 
     def jump(self):
-        self.vel = -10.5
+        self.velocity = -10.5
         self.tick_count = 0
         self.height = self.y
 
     def move(self):
         self.tick_count += 1
-        displacement = self.vel * (self.tick_count) + 0.5 * (3) * (self.tick_count) ** 2
+        displacement = self.velocity * (self.tick_count) + 0.5 * (3) * (self.tick_count) ** 2
 
         if displacement >= 16:
             displacement = (displacement / abs(displacement)) * 16
@@ -69,7 +72,7 @@ class Bird:
                 self.tilt = self.MAX_ROTATION
         else:
             if self.tilt > -90:
-                self.tilt -= self.ROT_VEL
+                self.tilt -= self.R_VELOCITY
 
     def draw(self, win):
         self.img_count += 1
@@ -99,7 +102,7 @@ class Pipe:
     WIN_HEIGHT = WIN_HEIGHT
     WIN_WIDTH = WIN_WIDTH
     GAP = 200
-    VEL = 5
+    VELOCITY = 5
 
     def __init__(self, x):
         self.x = x
@@ -122,7 +125,7 @@ class Pipe:
         self.bottom = self.height + self.GAP
 
     def move(self):
-        self.x -= self.VEL
+        self.x -= self.VELOCITY
 
     def draw(self, win):
         win.blit(self.PIPE_TOP, (self.x, self.top))
@@ -145,7 +148,7 @@ class Pipe:
 
 
 class Base:
-    VEL = 5
+    VELOCITY = 5
     WIN_WIDTH = WIN_WIDTH
     WIDTH = base_img.get_width()
     IMG = base_img
@@ -156,8 +159,8 @@ class Base:
         self.x2 = self.WIDTH
 
     def move(self):
-        self.x1 -= self.VEL
-        self.x2 -= self.VEL
+        self.x1 -= self.VELOCITY
+        self.x2 -= self.VELOCITY
         if self.x1 + self.WIDTH < 0:
             self.x1 = self.x2 + self.WIDTH
 
@@ -192,9 +195,6 @@ def end_screen(win, score):
         text_label = END_FONT.render("GAME OVER!", 1, (255, 255, 255))
         text_label2 = END_FONT.render(f"SCORE: {score}", 1, (255, 255, 255))
 
-    dimScreen = pygame.Surface((600, 800))
-    dimScreen.fill((0, 0, 0))
-
     run = True
     while run:
         for event in pygame.event.get():
@@ -203,11 +203,9 @@ def end_screen(win, score):
             if event.type == pygame.KEYDOWN:
                 main(win)
 
-        win.blit(dimScreen, (0, 0))
-        win.blit(text_label, (135, 300))
-        win.blit(text_label2, (180, 370))
+        win.blit(text_label, (160, 300))
+        win.blit(text_label2, (200, 370))
         pygame.display.update()
-
     pygame.quit()
     quit()
 
@@ -281,6 +279,5 @@ def main(win):
 
         draw_window(WIN, bird, pipes, base, score)
     end_screen(WIN, score)
-
-
+    
 main(WIN)
